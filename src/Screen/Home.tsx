@@ -19,6 +19,7 @@ import SettingsSection from '../components/SettingsSection';
 import GenerateButton from '../components/GenerateButton';
 import { TabType } from '../types/index.';
 
+
 export default function Home() {
   const [selectedTab, setSelectedTab] = useState<TabType>('Smart script');
   const [selectedSize, setSelectedSize] = useState<string>(POSTER_SIZES[0]);
@@ -54,16 +55,24 @@ export default function Home() {
   ];
 
   return (
-    <SafeAreaView style={styles.container} edges={['top']}>
+    <View style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor={Colors.black} />
       
-      <Header
-        selectedTab={selectedTab}
-        onTabChange={handleTabChange}
-        onClose={() => console.log('Close pressed')}
-      />
+      {/* Safe area for top only */}
+      <SafeAreaView edges={['top']} style={styles.topSafeArea}>
+        <Header
+          selectedTab={selectedTab}
+          onTabChange={handleTabChange}
+          onClose={() => console.log('Close pressed')}
+        />
+      </SafeAreaView>
 
-      <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+      {/* Main content */}
+      <ScrollView 
+        style={styles.content} 
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.contentContainer}
+      >
         <Text style={styles.title}>What type of posters do you want to create?</Text>
 
         <CategoryList
@@ -78,12 +87,18 @@ export default function Home() {
         />
 
         <SettingsSection title="Settings" settings={settings} />
+        
+        {/* Add spacing to prevent overlap */}
+        <View style={styles.spacer} />
       </ScrollView>
 
-      <View style={styles.bottomContainer}>
-        <GenerateButton onPress={handleGenerate} />
-      </View>
-    </SafeAreaView>
+      {/* Bottom container with safe area */}
+      <SafeAreaView edges={['bottom']} style={styles.bottomSafeArea}>
+        <View style={styles.bottomContainer}>
+          <GenerateButton onPress={handleGenerate} />
+        </View>
+      </SafeAreaView>
+    </View>
   );
 }
 
@@ -92,9 +107,15 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Colors.black,
   },
+  topSafeArea: {
+    backgroundColor: Colors.black,
+  },
   content: {
     flex: 1,
     paddingHorizontal: 20,
+  },
+  contentContainer: {
+    paddingBottom: 20,
   },
   title: {
     color: Colors.white,
@@ -103,8 +124,15 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     lineHeight: 30,
   },
+  spacer: {
+    height: 120, 
+  },
+  bottomSafeArea: {
+    backgroundColor: Colors.black,
+  },
   bottomContainer: {
     paddingHorizontal: 20,
-    paddingBottom: 20,
+    paddingTop: 10,
+    backgroundColor: Colors.black,
   },
 });
